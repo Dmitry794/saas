@@ -25,9 +25,9 @@ RUN yum -y update \
  && chmod +x /init.sh
 
 # CA Libraries
-COPY CA.tar.gz /
-RUN tar -xhzf CA.tar.gz -C /opt \
- && rm -f CA.tar.gz
+# COPY CA.tar.gz /
+#RUN tar -xhzf CA.tar.gz -C /opt \
+# && rm -f CA.tar.gz
 
 # Setup environment
 RUN echo 'export LD_LIBRARY_PATH=/opt/CA/SharedComponents/lib:/opt/CA/CAlib:/opt/CA/DSM/caf/lib' >> ~/.bashrc \
