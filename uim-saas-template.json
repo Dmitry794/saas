@@ -1,0 +1,260 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "uim-test-template",
+    "annotations": {
+      "description": "This is template to create simple UIM test application",
+      "iconClass": "icon-openjdk",
+      "tags": "uim, test"
+    }
+  },
+  "labels": {
+    "template": "uim-test-template"
+  },
+  "objects": [{
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "centos",
+        "annotations": {
+          "openshift.io/display-name": "centos"
+        }
+      },
+      "spec": {
+        "tags": [{
+          "name": "centos7",
+          "annotations": {
+            "openshift.io/display-name": "Centos 7",
+            "openshift.io/imported-from": "centos:centos7",
+            "description": "Build centos",
+            "iconClass": "icon-openjdk",
+            "tags": "centos",
+            "supports": "centos"
+          },
+          "from": {
+            "kind": "DockerImage",
+            "name": "centos:centos7"
+          }
+        }]
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "centos7-ca",
+        "annotations": {
+          "openshift.io/display-name": "centos7-ca"
+        }
+      },
+      "spec": {
+        "tags": [{
+          "name": "latest",
+          "annotations": {
+            "openshift.io/display-name": "Openshift Test",
+            "description": "Build centos7-ca",
+            "iconClass": "icon-openjdk",
+            "tags": "${APP_NAME}"
+          },
+          "from": {
+            "kind": "ImageStreamTag",
+            "name": "latest"
+          }
+        }]
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "uim-hub",
+        "annotations": {
+          "openshift.io/display-name": "uim-hub"
+        }
+      },
+      "spec": {
+        "tags": [{
+          "name": "latest",
+          "annotations": {
+            "openshift.io/display-name": "Openshift Test",
+            "description": "Build uim-hub",
+            "iconClass": "icon-openjdk",
+            "tags": "${APP_NAME}"
+          },
+          "from": {
+            "kind": "ImageStreamTag",
+            "name": "latest"
+          }
+        }]
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APP_NAME}-centos7-ca",
+        "labels": {
+          "name": "${APP_NAME}"
+        }
+      },
+      "spec": {
+        "triggers": [{
+            "type": "GitHub",
+            "github": {
+              "secret": "secret101"
+            }
+          },
+          {
+            "type": "Generic",
+            "generic": {
+              "secret": "secret101"
+            }
+          },
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChange": {}
+          }
+
+        ],
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "${SOURCE_GIT_REPOSITORY}",
+            "ref": "${SOURCE_GIT_REF}"
+          },
+          "contextDir": "centos"
+        },
+        "strategy": {
+          "type": "Docker",
+          "dockerStrategy": {
+            "noCache": true,
+            "forcePull": true,
+            "from": {
+              "kind": "ImageStreamTag",
+              "name": "centos:centos7"
+            }
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "centos7-ca:latest"
+          }
+        },
+        "resources": {}
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APP_NAME}-uim-hub",
+        "labels": {
+          "name": "${APP_NAME}"
+        }
+      },
+      "spec": {
+        "triggers": [{
+            "type": "GitHub",
+            "github": {
+              "secret": "secret101"
+            }
+          },
+          {
+            "type": "Generic",
+            "generic": {
+              "secret": "secret101"
+            }
+          },
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChange": {}
+          }
+
+        ],
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "${SOURCE_GIT_REPOSITORY}",
+            "ref": "${SOURCE_GIT_REF}"
+          },
+          "contextDir": "hub"
+        },
+        "strategy": {
+          "type": "Docker",
+          "dockerStrategy": {
+            "noCache": true,
+            "forcePull": true,
+            "from": {
+              "kind": "ImageStreamTag",
+              "name": "centos7-ca:latest"
+            }
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "uim-hub:latest"
+          }
+        },
+        "resources": {}
+      }
+    }
+  ],
+  "parameters": [{
+      "name": "NAMESPACE",
+      "displayName": "Namespace",
+      "description": "Namespace (should match to project name)",
+      "value": "uim-saas-dockerization"
+    },
+    {
+      "name": "APP_NAME",
+      "displayName": "Application name",
+      "description": "Application name",
+      "value": "uim-saas-dockerization"
+    },
+    {
+      "name": "SOURCE_GIT_REPOSITORY",
+      "displayName": "Git repository",
+      "description": "Git repository",
+      "value": "https://github.com/Dmitry794/saas.git"
+    },
+    {
+      "name": "SOURCE_GIT_REF",
+      "displayName": "Git reference",
+      "description": "Git reference",
+      "value": "master"
+    },
+    {
+      "name": "UMP_IMAGE",
+      "displayName": "Ump image name",
+      "description": "Ump image name",
+      "value": "ump-saas"
+    },
+    {
+      "name": "CONTAINER_NAME",
+      "displayName": "Container name",
+      "description": "Simple container name",
+      "value": "ump-saas-hub"
+    },
+    {
+      "name": "NMS_HUB_NAME",
+      "displayName": "UMP hub name",
+      "description": "Hub name",
+      "value": "ump-saas-hub"
+    },
+    {
+      "name": "DB_SERVER",
+      "displayName": "UIM database ip address",
+      "description": "UIM database ip address",
+      "value": "172.16.0.247"
+    }
+  ]
+}
