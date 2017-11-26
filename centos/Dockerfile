@@ -6,23 +6,23 @@ LABEL name="CentOS CA Image" \
     license="GPLv2" \
     build-date="20170921"
 
-RUN yum -y update \
- && yum -y install \
-        java-1.8.0-openjdk \
-        net-tools \
-        passwd \
-        sshpass \
-        openssh-clients \
-        rsync \
-        curl \
-        wget \
-        tar \
-        less \
-        unzip \
-        vim \
- && yum clean all \
- && rm -rf /var/cache/yum \
- && chmod +x /init.sh
+#RUN yum -y update \
+# && yum -y install \
+#        java-1.8.0-openjdk \
+#        net-tools \
+#        passwd \
+#        sshpass \
+#        openssh-clients \
+#        rsync \
+#        curl \
+#        wget \
+#        tar \
+#        less \
+#        unzip \
+#        vim \
+# && yum clean all \
+# && rm -rf /var/cache/yum \
+# && chmod +x /init.sh
 
 # CA Libraries
 # COPY CA.tar.gz /
