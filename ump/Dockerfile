@@ -5,7 +5,7 @@ USER 0
 COPY scripts /scripts/
 
 RUN chmod +x /scripts/* \
- && chown -R 1001:1001 /scripts
+ && chown -R 1001:1001 /scripts \
  && /scripts/ump-install.sh
 
  # Expose ports
