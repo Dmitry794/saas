@@ -6,9 +6,8 @@ echo "downloading packages"
 echo "init security"
 echo "VARIABLES:"
 # (ONLY FOR IMAGES) settings for temporary database, it is required for installing uimsaasconfigue during building image
-echo "\t${NMS_HUB_NAME}"
-echo "\t${DB_SERVER}"
-ping $DB_SERVER -c 1
+echo "${NMS_HUB_NAME}"
+echo "${DB_SERVER}"
 
 echo "update hub"
 echo "remove archive"
